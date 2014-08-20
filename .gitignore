@@ -1,0 +1,11 @@
+target/
+bin/
+dependency-reduced-pom.xml
+.idea/
+*.iml
+.project
+.classpath
+.metadata/
+.settings/
+data/
+/temp/
