@@ -5,7 +5,7 @@ import static ro.j.cache.utils.Misc.assertNotNull;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-class MultiCache<K, T> implements Cache<K, T> {
+class MultiLevelCache<K, T> implements Cache<K, T> {
 
 	private Map<K, T> map = new LinkedHashMap<>();
 

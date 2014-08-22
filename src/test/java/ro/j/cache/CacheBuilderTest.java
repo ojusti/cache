@@ -9,6 +9,6 @@ public class CacheBuilderTest {
 	@Test
 	public void buildsDefaultCache() {
 		Cache<String, Integer> cache = CacheBuilder.<String, Integer> newCache().build();
-		assertThat(cache).isInstanceOf(MultiCache.class);
+		assertThat(cache).isInstanceOf(MultiLevelCache.class);
 	}
 }

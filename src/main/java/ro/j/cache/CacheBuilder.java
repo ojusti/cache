@@ -8,7 +8,7 @@ public class CacheBuilder<K, T> {
 	
 	public Cache<K, T> build()
 	{
-		return new MultiCache<>();
+		return new MultiLevelCache<>();
 	}
 
 }

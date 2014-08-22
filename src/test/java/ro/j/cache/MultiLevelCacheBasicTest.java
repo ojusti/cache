@@ -5,11 +5,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MultiCacheBasicTest {
+public class MultiLevelCacheBasicTest {
 
 	private Integer key, key2;
 	private String value, value2;
-	private Cache<Integer, String> cache;
+	private MultiLevelCache<Integer, String> cache;
 
 	@Before
 	public void initValues() {
@@ -17,11 +17,11 @@ public class MultiCacheBasicTest {
 		value2 = "another";
 		key = 56;
 		key2 = 123;
-		cache = new MultiCache<>();
+		cache = new MultiLevelCache<>();
 	}
 	
 	@Test
-	public void retrievesTheAddedValue() {
+	public void givenKeysAreMappedToValues_whenGetISCalledForAKey_thenTheMappedValueIsRetrievedFromCache() {
 		assertCacheRetrievesTheAddedValue(key, value);
 		assertCacheRetrievesTheAddedValue(key2, value2);
 	
@@ -39,12 +39,12 @@ public class MultiCacheBasicTest {
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void doesntAcceptNullKeys() {
+	public void cacheDoesntAcceptNullKeys() {
 		cache.put(null, value);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void doesntAcceptNullValues() {
+	public void cacheDoesntAcceptNullValues() {
 		cache.put(key, null);
 	}
 	
