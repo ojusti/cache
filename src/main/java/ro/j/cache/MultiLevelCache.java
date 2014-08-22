@@ -2,12 +2,12 @@ package ro.j.cache;
 
 import static ro.j.cache.utils.Misc.assertNotNull;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class MultiLevelCache<K, T> implements Cache<K, T> {
 
-	private Map<K, T> map = new LinkedHashMap<>();
+	private Map<K, T> map = new ConcurrentHashMap<>();
 
 	@Override
 	public void put(K key, T value) {
