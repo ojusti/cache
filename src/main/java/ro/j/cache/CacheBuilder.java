@@ -8,13 +8,14 @@ public class CacheBuilder<K, T> {
 	
 	private MultiLevelCache<K, T> cache = new MultiLevelCache<>();
 	
-	public CacheBuilder<K, T> overflowTo(CacheBuilder<K, T> anotherCache, OverflowLimitBuilder maxSize) {
-		cache.setOverflowTo(anotherCache.build(), maxSize.build());
+	public CacheBuilder<K, T> overflowTo(CacheBuilder<K, T> anotherCache) {
+		cache.setOverflowTo(anotherCache.build());
 		return this;
 	}
 	
-	public static OverflowLimitBuilder whenSizeExceeds(int size) {
-		return new OverflowLimitBuilder(size);
+	public CacheBuilder<K, T> whenSizeExceeds(int maxSize) {
+		cache.setMaxSize(maxSize);
+		return this;
 	}
 
 	public Cache<K, T> build() {
@@ -27,6 +28,11 @@ public class CacheBuilder<K, T> {
 		finally {
 			cache = null;
 		}
+	}
+
+	public CacheBuilder<K, T> evict(EvictionStrategy strategy) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

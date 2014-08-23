@@ -7,5 +7,5 @@ Note: There are some tests slow tests for thread safety (~3 minutes each on my m
 ```
 To run only the fast tests use
 ''' bash
-mvn clean test -DexcludedGroups="ro.j.SlowTest"
+mvn clean test -DexcludedGroups="ro.j.test.SlowTest"
 '''

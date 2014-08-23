@@ -13,7 +13,7 @@ class MultiLevelCache<K, T> implements Cache<K, T> {
 	private Cache<K, T> overflow;
 	private AtomicInteger approximateSize = new AtomicInteger();
 	private boolean overflowPhase;
-	private OverflowLimit overflowLimit = OverflowLimitBuilder.noOverflow();
+	private int maxSize = Integer.MAX_VALUE;
 	@Override
 	public void put(K key, T value) {
 		assertNotNull(key);
@@ -32,7 +32,7 @@ class MultiLevelCache<K, T> implements Cache<K, T> {
 
 	private boolean shouldOverflow() {
 		if(!overflowPhase) {
-			overflowPhase = overflowLimit.isExceeded(approximateSize.incrementAndGet());
+			overflowPhase = approximateSize.incrementAndGet() > maxSize;
 		}
 		return overflowPhase;
 	}
@@ -43,9 +43,11 @@ class MultiLevelCache<K, T> implements Cache<K, T> {
 		return map.get(key);
 	}
 
-	void setOverflowTo(Cache<K, T> anotherCache, OverflowLimit overflowLimit) {
+	void setOverflowTo(Cache<K, T> anotherCache) {
 		this.overflow = anotherCache;
-		this.overflowLimit = overflowLimit;
+	}
+	void setMaxSize(int maxSize) {
+		this.maxSize = maxSize;		
 	}
 	Cache<K, T> getOverflowCache() {
 		return overflow;

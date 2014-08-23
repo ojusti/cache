@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import ro.j.SlowTest;
-import ro.j.cache.testTools.SynchedThreads;
+import ro.j.test.SlowTest;
+import ro.j.test.SynchedThreads;
 
 /** 
  * these 'thread safe' tests fail if we modify MultiLevelCache implementation as follows: 
@@ -23,18 +23,19 @@ public class ThreadSafeTest {
 	private int n;
 	private AtomicInteger counter;
 	private MultiLevelCache<Integer, Integer> cache;
-	private OverflowLimit limit;
+	private int maxSize;
 	private MultiLevelCache<Integer, Integer> secondLevelCache;
 
 	@Before
 	public void init()
 	{
-		n = 1000;
-		limit = new OverflowLimit(10);
+		n = 10;
+		maxSize = 10;
 	}
 	
 	private void createCache() {
 		cache = new MultiLevelCache<>();
+		cache.setMaxSize(maxSize);
 		secondLevelCache = new MultiLevelCache<>();
 		
 		counter = new AtomicInteger();
@@ -45,9 +46,8 @@ public class ThreadSafeTest {
 		for(int i = 0; i < n; i++)
 		{
 			createCache();
-			cache.setOverflowTo(null, limit);
 			SynchedThreads.launch(new FillCache(n)).times(n).await();
-			assertThat(cache.localSize()).isEqualTo(limit.get());
+			assertThat(cache.localSize()).isEqualTo(maxSize);
 		}
 	}
 
@@ -57,9 +57,8 @@ public class ThreadSafeTest {
 		for(int i = 0; i < n; i++)
 		{
 			createCache();
-			cache.setOverflowTo(null, limit);
 			SynchedThreads.launch(new FillCache(10)).times(n).await();
-			assertThat(cache.localSize()).isEqualTo(limit.get());
+			assertThat(cache.localSize()).isEqualTo(maxSize);
 		}
 	}
 	
@@ -69,10 +68,10 @@ public class ThreadSafeTest {
 		for(int i = 0; i < n; i++)
 		{
 			createCache();
-			cache.setOverflowTo(secondLevelCache, limit);
+			cache.setOverflowTo(secondLevelCache);
 			SynchedThreads.launch(new FillCache(n)).times(n).await();
-			assertThat(cache.localSize()).isEqualTo(limit.get());
-			assertThat(secondLevelCache.localSize()).isEqualTo(numberOfEntries(n) - limit.get());
+			assertThat(cache.localSize()).isEqualTo(maxSize);
+			assertThat(secondLevelCache.localSize()).isEqualTo(numberOfEntries(n) - maxSize);
 		}
 	}
 
@@ -83,15 +82,15 @@ public class ThreadSafeTest {
 		for(int i = 0; i < n; i++)
 		{
 			createCache();
-			cache.setOverflowTo(secondLevelCache, limit);
+			cache.setOverflowTo(secondLevelCache);
 			SynchedThreads.launch(new FillCache(step)).times(n).await();
-			assertThat(cache.localSize()).isEqualTo(limit.get());
-			assertThat(secondLevelCache.localSize()).isEqualTo(numberOfEntries(step) - limit.get());
+			assertThat(cache.localSize()).isEqualTo(maxSize);
+			assertThat(secondLevelCache.localSize()).isEqualTo(numberOfEntries(step) - maxSize);
 		}
 	}
 
 	private int numberOfEntries(int step) {
-		return n + step*(counter.get() - 1);
+		return n + step*(counter.get()-1);
 	}
 
 	private class FillCache implements Runnable {

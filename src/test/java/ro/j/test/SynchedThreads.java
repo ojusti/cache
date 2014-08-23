@@ -1,4 +1,4 @@
-package ro.j.cache.testTools;
+package ro.j.test;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
