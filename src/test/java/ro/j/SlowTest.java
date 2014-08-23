@@ -1,4 +1,4 @@
-package ro.j.cache.testTools;
+package ro.j;
 
 public interface SlowTest {
 

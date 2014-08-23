@@ -27,7 +27,7 @@ class MultiLevelCache<K, T> implements Cache<K, T> {
 	}
 
 	private boolean shouldOverflow() {
-		if(!overflowPhase && overflowLimit != null) {
+		if(!overflowPhase) {
 			overflowPhase = overflowLimit.isExceeded(approximateSize.incrementAndGet());
 		}
 		return overflowPhase;

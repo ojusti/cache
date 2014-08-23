@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import ro.j.cache.testTools.SlowTest;
+import ro.j.SlowTest;
 import ro.j.cache.testTools.SynchedThreads;
 
 public class MultiLevelCacheOverflowTest {
