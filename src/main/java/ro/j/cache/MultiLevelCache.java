@@ -11,8 +11,8 @@ class MultiLevelCache<K, T> implements Cache<K, T> {
 	private final Map<K, T> map = new ConcurrentHashMap<>();
 	private Cache<K, T> overflow;
 	private AtomicInteger approximateSize = new AtomicInteger();
-	private volatile boolean overflowPhase;
-	private OverflowLimit overflowLimit;
+	private boolean overflowPhase;
+	private OverflowLimit overflowLimit = OverflowLimitBuilder.noOverflow();
 	@Override
 	public void put(K key, T value) {
 		assertNotNull(key);

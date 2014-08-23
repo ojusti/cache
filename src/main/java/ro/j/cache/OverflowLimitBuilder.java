@@ -11,4 +11,8 @@ public class OverflowLimitBuilder {
 		return null;
 	}
 
+	public static OverflowLimit noOverflow() {
+		return new OverflowLimit(Integer.MAX_VALUE);
+	}
+
 }
