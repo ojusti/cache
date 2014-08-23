@@ -12,4 +12,8 @@ public class OverflowLimit {
 		return size > maxSize;
 	}
 
+	public int get() {
+		return maxSize;
+	}
+
 }

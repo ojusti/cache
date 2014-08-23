@@ -3,6 +3,7 @@ package ro.j.cache;
 import static ro.j.cache.utils.Misc.assertNotNull;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,6 +24,9 @@ class MultiLevelCache<K, T> implements Cache<K, T> {
 		}
 		if(shouldOverflow()) {
 			map.remove(key);
+			if(overflow != null) {
+				overflow.put(key, value);
+			}
 		}
 	}
 
@@ -49,6 +53,10 @@ class MultiLevelCache<K, T> implements Cache<K, T> {
 
 	int localSize() {
 		return map.size();
+	}
+
+	Set<K> keySet() {
+		return map.keySet();
 	}
 
 }
