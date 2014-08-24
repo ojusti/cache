@@ -1,6 +1,7 @@
 ## Build
 ``` bash
-mvn clean test```
+mvn clean test
+```
 Note: There are some tests slow tests for thread safety. 
 They are all tagged with:
 ``` java
@@ -8,9 +9,9 @@ They are all tagged with:
 ```
 For your convenience, I modified the number of iterations to 100 (instead of 1000).
 Anyway, to run only the fast tests use
-''' bash
+``` bash
 mvn clean test -DexcludedGroups="ro.j.test.SlowTest"
-'''
+```
 
 ### Github
 `git@github.com:ojusti/cache.git`
