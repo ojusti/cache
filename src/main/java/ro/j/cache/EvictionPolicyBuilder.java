@@ -22,9 +22,15 @@ public class EvictionPolicyBuilder<K, T> implements Builder<EvictionPolicy<K, T>
 	}
 
 	
-	public static <K, T> EvictionPolicyBuilder<K, T> lru() {
-		return new EvictionPolicyBuilder<>(new LRU<K, T>());
+	public static <K, T> EvictionPolicyBuilder<K, T> fifo() {
+		return new EvictionPolicyBuilder<>(new FIFO<K, T>());
 	}
+	public static <K, T> EvictionPolicyBuilder<K, T> lru() {
+        return new EvictionPolicyBuilder<>(new LRU<K, T>());
+    }
+	public static <K, T> EvictionPolicyBuilder<K, T> lfu() {
+        return new EvictionPolicyBuilder<>(new LFU<K, T>());
+    }
 	public static <K, T> EvictionPolicyBuilder<K, T> no() {
 		return new EvictionPolicyBuilder<>(new NoEviction<K, T>());
 	}

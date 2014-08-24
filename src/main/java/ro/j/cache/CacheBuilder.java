@@ -8,7 +8,7 @@ public class CacheBuilder<K, T> implements Builder<Cache<K, T>> {
 	
 	private MultiLevelCache<K, T> cache = new MultiLevelCache<>();
 	
-	public CacheBuilder<K, T> overflowTo(Builder<Cache<K, T>> anotherCache) {
+	public CacheBuilder<K, T> overflowTo(Builder<? extends Cache<K, T>> anotherCache) {
 		cache.overflow = anotherCache.build();
 		return this;
 	}

@@ -33,6 +33,7 @@ public class DoubleLinkedListTest {
     }
 
     private DoubleLinkedCacheValue<Integer, Integer>[] addFirst(int n) {
+        @SuppressWarnings("unchecked")
         DoubleLinkedCacheValue<Integer, Integer>[] nodes = new DoubleLinkedCacheValue[n];
         for (int i = 0; i < n; i++) {
             nodes[i] = new DoubleLinkedCacheValue<>(i, i);
@@ -75,7 +76,7 @@ public class DoubleLinkedListTest {
 
         assertQueueIsEmpty();
     }
-    
+
     @Test
     public void whenNodeIsRemovedTwice_thenSecondIsNop() {
         DoubleLinkedCacheValue<Integer, Integer>[] nodes = addFirst(10);
@@ -83,4 +84,26 @@ public class DoubleLinkedListTest {
         queue.remove(nodes[5]);
         assertThat(queue.removeLast()).isNotNull();
     }
+
+    // @Test
+    // public void swapTwoAdjacentNodes() {
+    // DoubleLinkedCacheValue<Integer, Integer>[] nodes = addFirst(2);
+    // queue.swap(nodes[0], nodes[1]);
+    //
+    // assertThat(queue.removeLast()).isSameAs(nodes[1]);
+    // assertThat(queue.removeLast()).isSameAs(nodes[0]);
+    // assertQueueIsEmpty();
+    // }
+    //
+    // @Test
+    // public void swapTwoDistantNodes() {
+    // DoubleLinkedCacheValue<Integer, Integer>[] nodes = addFirst(4);
+    // queue.swap(nodes[0], nodes[2]);
+    //
+    // assertThat(queue.removeLast()).isSameAs(nodes[2]);
+    // assertThat(queue.removeLast()).isSameAs(nodes[1]);
+    // assertThat(queue.removeLast()).isSameAs(nodes[0]);
+    // assertThat(queue.removeLast()).isSameAs(nodes[3]);
+    // assertQueueIsEmpty();
+    // }
 }

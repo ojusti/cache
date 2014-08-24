@@ -59,4 +59,12 @@ public class CacheBuilderTest {
 		
 		assertThat(((MultiLevelCache<String, Integer>) cache).policy).isSameAs(policy);
 	}
+	
+	@Test
+    public void buildsCacheWithDiskStore() {
+	    DiskStoreBuilder<String, Integer> diskStore = DiskStoreBuilder.newDiskStore(mock(Folder.class));
+	    Cache<String, Integer> cache = newCache.overflowTo(diskStore).build();
+	    
+	    assertThat(((MultiLevelCache<String, Integer>) cache).overflow).isSameAs(diskStore.build());
+    }
 }
