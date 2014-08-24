@@ -14,7 +14,7 @@ public class MultiLevelCacheOverflowTest {
 	public void createCache() {
 		cache = new MultiLevelCache<>();
 		maxSize = 1;
-		cache.setMaxSize(maxSize);
+		cache.maxSize = maxSize;
 		
 	}
 
@@ -28,7 +28,7 @@ public class MultiLevelCacheOverflowTest {
 	@Test
 	public void whenSizeIsExceeded_thenCacheOverflows() {
 		MultiLevelCache<Integer, Integer> secondLevelCache = new MultiLevelCache<>();
-		cache.setOverflowTo(secondLevelCache);
+		cache.overflow = secondLevelCache;
 		
 		cache.put(1, 1);
 		cache.put(2, 2);
@@ -36,8 +36,28 @@ public class MultiLevelCacheOverflowTest {
 		assertThat(cache.localSize()).isEqualTo(maxSize);
 		assertThat(secondLevelCache.localSize()).isEqualTo(2 - maxSize);
 		
-		assertThat(cache.keySet()).isNotEqualTo(secondLevelCache.keySet());
-		
+		assertThat(cache.localKeySet()).isNotEqualTo(secondLevelCache.localKeySet());
 	}
+	
+	@Test
+    public void whenKeysAreAddedTwice_thenTheyAreInBothCaches() {
+        MultiLevelCache<Integer, Integer> secondLevelCache = new MultiLevelCache<>();
+        cache.overflow = secondLevelCache;
+        cache.put(1, 1);
+        cache.put(2, 2);
+        cache.put(1, 5);
+        
+        assertThat(cache.localSize()).isEqualTo(maxSize);
+        assertThat(secondLevelCache.localSize()).isEqualTo(2);
+        
+        assertThat(cache.get(1)).isEqualTo(5);
+        assertThat(secondLevelCache.get(1)).isEqualTo(1);
+        
+        cache.put(3, 3);
+        
+        assertThat(cache.get(1)).isEqualTo(5);
+        assertThat(secondLevelCache.get(1)).isEqualTo(5);
+
+    }
 
 }

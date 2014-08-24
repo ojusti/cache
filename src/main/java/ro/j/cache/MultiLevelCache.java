@@ -5,60 +5,68 @@ import static ro.j.cache.utils.Misc.assertNotNull;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 class MultiLevelCache<K, T> implements Cache<K, T> {
 
-	private final Map<K, T> map = new ConcurrentHashMap<>();
-	private Cache<K, T> overflow;
-	private AtomicInteger approximateSize = new AtomicInteger();
-	private boolean overflowPhase;
-	private int maxSize = Integer.MAX_VALUE;
-	@Override
-	public void put(K key, T value) {
-		assertNotNull(key);
-		assertNotNull(value);
-		T previousValue = map.put(key, value);
-		if(previousValue != null) {
-			return;
-		}
-		if(shouldOverflow()) {
-			map.remove(key);
-			if(overflow != null) {
-				overflow.put(key, value);
-			}
-		}
-	}
+    private final Map<K, CacheValue<K, T>> map = new ConcurrentHashMap<>();
+    Cache<K, T> overflow;
+    EvictionPolicy<K, T> policy = EvictionPolicyBuilder.<K, T> lru().build();
 
-	private boolean shouldOverflow() {
-		if(!overflowPhase) {
-			overflowPhase = approximateSize.incrementAndGet() > maxSize;
-		}
-		return overflowPhase;
-	}
+    @Override
+    public void put(K key, T value) {
+        assertNotNull(key);
 
-	@Override
-	public T get(K key) {
-		assertNotNull(key);
-		return map.get(key);
-	}
+        CacheValue<K, T> evictedValue = putInMap(key, value);
+        if (evictedValue != null && overflow != null) {
+            overflow.put(evictedValue.key, evictedValue.value);
+        }
+    }
 
-	void setOverflowTo(Cache<K, T> anotherCache) {
-		this.overflow = anotherCache;
-	}
-	void setMaxSize(int maxSize) {
-		this.maxSize = maxSize;		
-	}
-	Cache<K, T> getOverflowCache() {
-		return overflow;
-	}
+    private synchronized CacheValue<K, T> putInMap(K key, T value) {
+        CacheValue<K, T> currentValue = policy.makeValue(key, value);
+        CacheValue<K, T> previousValue = map.put(key, currentValue);
 
-	int localSize() {
-		return map.size();
-	}
+        if (previousValue != null) {
+            policy.removeValue(previousValue);
+            return null;
+        }
+        if (!isOverLimit()) {
+            return null;
+        }
 
-	Set<K> keySet() {
-		return map.keySet();
-	}
+        CacheValue<K, T> evictedValue = policy.evictAValue();
+        if (evictedValue != null) {
+            map.remove(evictedValue.key);
+        }
+        return evictedValue;
+    }
+
+    int maxSize = Integer.MAX_VALUE;
+
+    private boolean isOverLimit() {
+        return map.size() > maxSize;
+    }
+
+    @Override
+    public synchronized T get(K key) {
+        assertNotNull(key);
+        CacheValue<K, T> cacheValue = map.get(key);
+        if (cacheValue == null) {
+            if (overflow != null) {
+                return overflow.get(key);
+            }
+            return null;
+        }
+        policy.updateValue(cacheValue);
+        return cacheValue.value;
+    }
+
+    int localSize() {
+        return map.size();
+    }
+
+    Set<K> localKeySet() {
+        return map.keySet();
+    }
 
 }

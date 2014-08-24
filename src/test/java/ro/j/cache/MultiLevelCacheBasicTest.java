@@ -43,10 +43,4 @@ public class MultiLevelCacheBasicTest {
 		cache.put(null, value);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void cacheDoesntAcceptNullValues() {
-		cache.put(key, null);
-	}
-	
-
 }
