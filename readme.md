@@ -1,3 +1,21 @@
+## Summary
+Create a configurable 2-level cache. 
+
+##Requirements
+* Cache should implement the following interface:
+``` java
+public interface Cache<K, T> {
+ void put(K key, T value);
+ T get(K key);
+}
+```
+* Cache should have 2 levels: L1 - memory, L2 - file system.
+* Cache should support different eviction policies.
+* Cache size and eviction policy should be configurable.
+* Code should be covered by unit tests using JUnit/TestNG + any mock library Mockito, EasyMock, etc.
+* Project should be build via Maven, Gradle, Ant or similar tool.
+* Cache should be thread safe.
+
 ## Build
 ``` bash
 mvn clean test
